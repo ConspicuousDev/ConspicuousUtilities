@@ -1,0 +1,7 @@
+{
+    "name": "OmniUtils",
+    "author": "Omniscient & Alpha T-Rex",
+    "description": "Utilities for Crystal Hollows.",
+    "version": "1.0.0",
+    "entry": "index.js"
+}
