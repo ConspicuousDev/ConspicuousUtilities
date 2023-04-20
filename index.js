@@ -1380,11 +1380,11 @@ let features = {
             this.saplingSlot = hotbar.findIndex(
                 (item) =>
                     item != null &&
-                    stripColor(item.getName()) == "Jungle Sapling"
+                    stripColor(item.getName()).endsWith("Sapling")
             )
             if (this.saplingSlot == -1) {
                 this.enabled = false
-                return ChatLib.chat("§cJungle Sapling not found.")
+                return ChatLib.chat("§cSapling not found.")
             }
             this.boneMealSlot = hotbar.findIndex(
                 (item) =>
