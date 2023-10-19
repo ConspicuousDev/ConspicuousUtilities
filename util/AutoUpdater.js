@@ -124,7 +124,8 @@ export function setup() {
         if (!downloadFileFromURL("https://github.com/OmniscientARK/ConspicuousUtilities/archive/refs/heads/master.zip", System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip"))
             return ChatLib.chat("&4An error occurred while auto updating. Try again later.")
         FileLib.write("ConspicuousUtilities/data", "version.txt", latestSHA, true)
-        replaceModuleFiles(tempZipPath, modulePath);
+        console.log(Config.modulesFolder)
+        replaceModuleFiles("/ConspicuousUtilities-auto-update.zip", Config.modulesFolder + "\\ConspicuousUtilities");
 
     }
 }
