@@ -1,7 +1,7 @@
 {
-    "name": "OmniUtils",
-    "author": "Omniscient & Alpha T-Rex",
-    "description": "Utilities for Crystal Hollows.",
-    "version": "1.0.0",
+    "name": "ConspicuousUtilities",
+    "author": "Omniscient",
+    "description": "General utilities for Hypixel Skyblock.",
+    "version": "0.1",
     "entry": "index.js"
 }
