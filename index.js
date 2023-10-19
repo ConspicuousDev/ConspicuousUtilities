@@ -1,5 +1,8 @@
 import HarpSolver from "./features/HarpSolver";
 import {ALLOWED_TRIGGERS} from "./util/Constants";
+import * as AutoUpdater from "./util/AutoUpdater";
+
+AutoUpdater.setup()
 
 const FEATURES = [new HarpSolver()].map((feature) => {
     const triggers = []
