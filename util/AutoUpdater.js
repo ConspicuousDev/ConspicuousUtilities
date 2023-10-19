@@ -56,63 +56,6 @@ function getLatestSHA() {
     return repoInfo.sha;
 }
 
-function unzip(zipFilePath, destDirectory) {
-    let destDir = new File(destDirectory);
-    if (!destDir.exists()) {
-        destDir.mkdir();
-    }
-    let zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
-    let entry = zipIn.getNextEntry();
-    while (entry != null) {
-        var filePath = destDirectory + File.separator + entry.getName();
-        if (!entry.isDirectory()) {
-            extractFile(zipIn, filePath);
-        } else {
-            var dir = new File(filePath);
-            dir.mkdir();
-        }
-        zipIn.closeEntry();
-        entry = zipIn.getNextEntry();
-    }
-    zipIn.close();
-}
-
-function extractFile(zipIn, filePath) {
-    let bos = new BufferedOutputStream(new FileOutputStream(filePath));
-    let bytesIn = JavaArray.newInstance(Byte.TYPE, 4096);
-    let read = 0;
-    while ((read = zipIn.read(bytesIn)) !== -1)
-        bos.write(bytesIn, 0, read);
-    bos.close();
-}
-
-function replaceModuleFiles(zipFilePath, moduleDirPath) {
-    let tempExtractPath = moduleDirPath + "_temp";
-
-    unzip(zipFilePath, tempExtractPath);
-
-    let moduleDir = new File(moduleDirPath);
-    let tempDir = new File(tempExtractPath);
-
-    for (let file in moduleDir.listFiles()) {
-        if (file.isFile()) file["delete"]();
-        else if (file.getName() !== "data") deleteDirectory(file);
-    }
-
-    for (var file in tempDir.listFiles())
-        Files.move(file.toPath(), new File(moduleDir, file.getName()).toPath());
-
-    deleteDirectory(tempDir);
-}
-
-function deleteDirectory(directory) {
-    for (let file in directory.listFiles()) {
-        if (file.isDirectory()) deleteDirectory(file);
-        else file["delete"]();
-    }
-    directory["delete"]();
-}
-
 export function setup() {
     if (!FileLib.exists("ConspicuousUtilities/data", "version"))
         FileLib.write("ConspicuousUtilities/data", "version.txt", "null", true)
@@ -124,8 +67,6 @@ export function setup() {
         if (!downloadFileFromURL("https://github.com/OmniscientARK/ConspicuousUtilities/archive/refs/heads/master.zip", System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip"))
             return ChatLib.chat("&4An error occurred while auto updating. Try again later.")
         FileLib.write("ConspicuousUtilities/data", "version.txt", latestSHA, true)
-        console.log(Config.modulesFolder)
-        replaceModuleFiles("/ConspicuousUtilities-auto-update.zip", Config.modulesFolder + "\\ConspicuousUtilities");
-
+        // replaceModuleFiles(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip", Config.modulesFolder + "\\ConspicuousUtilities");
     }
 }
