@@ -56,6 +56,26 @@ function downloadFileFromURL(downloadURL, savePath) {
     }
 }
 
+function moveDirectory(sourceDir, targetDir) {
+    const source = new File(sourceDir);
+    const target = new File(targetDir);
+
+    if (!target.exists()) {
+        target.mkdir();
+    }
+
+    const files = source.listFiles();
+    for (let i = 0; i < files.length; i++) {
+        const movedFile = new File(target.getPath(), files[i].getName());
+        if (files[i].isDirectory()) {
+            moveDirectory(files[i].getPath(), movedFile.getPath());
+            files[i]['delete']();
+        } else {
+            Files.move(files[i].toPath(), movedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+}
+
 function unzipAndReplace(zipFilePath, destDirPath) {
     const BUFFER_SIZE = 4096;
     let zipIn = null;
@@ -84,13 +104,10 @@ function unzipAndReplace(zipFilePath, destDirPath) {
             zipIn.closeEntry();
         }
 
-        const extractedFolder = new File(destDirPath + File.separator + "ConspicuousUtilities-master");
+        const extractedFolderPath = destDirPath + File.separator + "ConspicuousUtilities-master";
+        const extractedFolder = new File(extractedFolderPath);
         if (extractedFolder.exists() && extractedFolder.isDirectory()) {
-            const files = extractedFolder.listFiles();
-            for (let i = 0; i < files.length; i++) {
-                const dest = new File(destDirPath + File.separator + "ConspicuousUtilities", files[i].getName());
-                Files.move(files[i].toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
+            moveDirectory(extractedFolderPath, destDirPath + File.separator + "ConspicuousUtilities");
             extractedFolder['delete']();
         }
     } catch (e) {
