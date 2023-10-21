@@ -1,5 +1,4 @@
 import Feature from "../util/Feature";
-import {stripColor} from "../util/Method";
 import {getHypixelData} from "../util/ItemManager";
 import {ATTRIBUTES} from "../util/Constants";
 import Settings from "../settings/Settings";

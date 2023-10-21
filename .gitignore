@@ -1,6 +1,10 @@
-./data
-data/*
-config.toml
-./.idea
-.idea/*
-.gitignore
+{
+  "name": "ConspicuousUtilities",
+  "author": "Omniscient",
+  "description": "General utilities for Hypixel Skyblock.",
+  "version": "0.1",
+  "entry": "index.js",
+  "requires": [
+    "Vigilance"
+  ]
+}
