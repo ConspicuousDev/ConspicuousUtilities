@@ -3,14 +3,14 @@ const InputStreamReader = Java.type("java.io.InputStreamReader")
 const FileOutputStream = Java.type("java.io.FileOutputStream")
 const BufferedInputStream = Java.type("java.io.BufferedInputStream")
 const System = Java.type('java.lang.System')
-const JavaArray = Java.type("java.lang.reflect.Array");
-const Byte = Java.type('java.lang.Byte');
-const File = Java.type("java.io.File");
-const Files = Java.type("java.nio.file.Files");
-const ZipInputStream = Java.type("java.util.zip.ZipInputStream");
-const BufferedOutputStream = Java.type("java.io.BufferedOutputStream");
-const FileInputStream = Java.type("java.io.FileInputStream");
-
+const JavaArray = Java.type("java.lang.reflect.Array")
+const Byte = Java.type('java.lang.Byte')
+const File = Java.type("java.io.File")
+const ZipInputStream = Java.type("java.util.zip.ZipInputStream")
+const Files = Java.type("java.nio.file.Files")
+const Paths = Java.type("java.nio.file.Paths")
+const BufferedOutputStream = Java.type("java.io.BufferedOutputStream")
+const StandardCopyOption = Java.type('java.nio.file.StandardCopyOption')
 
 function httpGet(url) {
     const connection = new URL(url).openConnection()
@@ -22,6 +22,11 @@ function httpGet(url) {
     while ((i = reader.read()) !== -1)
         result.push(String.fromCharCode(i))
     return result.join("")
+}
+
+function getLatestSHA() {
+    const repoInfo = JSON.parse(httpGet("https://api.github.com/repos/OmniscientARK/ConspicuousUtilities/commits/master"));
+    return repoInfo.sha;
 }
 
 function downloadFileFromURL(downloadURL, savePath) {
@@ -51,66 +56,112 @@ function downloadFileFromURL(downloadURL, savePath) {
     }
 }
 
-function getLatestSHA() {
-    const repoInfo = JSON.parse(httpGet("https://api.github.com/repos/OmniscientARK/ConspicuousUtilities/commits/master"));
-    return repoInfo.sha;
+function unzipAndReplace(zipFilePath, destDirPath) {
+    const BUFFER_SIZE = 4096;
+    let zipIn = null;
+    try {
+        const destDir = new File(destDirPath);
+        if (!destDir.exists()) {
+            destDir.mkdir();
+        }
+        const zipFile = new File(zipFilePath);
+        zipIn = new ZipInputStream(new BufferedInputStream(Files.newInputStream(Paths.get(zipFile.toURI()))));
+        let entry;
+        while ((entry = zipIn.getNextEntry()) !== null) {
+            const filePath = destDirPath + File.separator + entry.getName();
+            if (!entry.isDirectory()) {
+                const bos = new BufferedOutputStream(new FileOutputStream(filePath));
+                const bytesIn = JavaArray.newInstance(Byte.TYPE, BUFFER_SIZE);
+                let read;
+                while ((read = zipIn.read(bytesIn)) !== -1) {
+                    bos.write(bytesIn, 0, read);
+                }
+                bos.close();
+            } else {
+                const dir = new File(filePath);
+                dir.mkdir();
+            }
+            zipIn.closeEntry();
+        }
+
+        const extractedFolder = new File(destDirPath + File.separator + "ConspicuousUtilities-master");
+        if (extractedFolder.exists() && extractedFolder.isDirectory()) {
+            const files = extractedFolder.listFiles();
+            for (let i = 0; i < files.length; i++) {
+                const dest = new File(destDirPath + File.separator + "ConspicuousUtilities", files[i].getName());
+                Files.move(files[i].toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            extractedFolder['delete']();
+        }
+    } catch (e) {
+        console.log("Error during unzip operation: " + e);
+    } finally {
+        if (zipIn) zipIn.close();
+    }
 }
 
-function unzipAndReplaceModule(zipFilePath, destinationDir) {
-    // Backup the 'config.toml' file and 'data' folder
-    const backupDir = System.getenv("TEMP") + "/ConspicuousUtilitiesBackup";
-    FileLib.createDirectory(backupDir);
-    if (FileLib.exists(destinationDir, "config.toml")) {
-        FileLib.copy(destinationDir + "/config.toml", backupDir + "/config.toml");
+function ensureDir(directoryPath) {
+    const dir = new File(directoryPath);
+    if (!dir.exists()) {
+        dir.mkdirs();  // This will create directory along with any necessary parent directories
     }
-    if (FileLib.exists(destinationDir, "data")) {
-        FileLib.copyDirectory(destinationDir + "/data", backupDir + "/data");
+}
+
+function copyFile(sourcePath, destPath) {
+    try {
+        ensureDir(new File(destPath).getParent());
+        Files.copy(Paths.get(sourcePath), Paths.get(destPath), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+    } catch (e) {
+        console.log("Error copying file: " + e);
     }
+}
 
-    // Unzipping the file
-    const entries = Java.from(FileLib.unzip(zipFilePath));
-
-    // Deleting existing module files
-    FileLib.deleteDirectory(destinationDir);
-    FileLib.createDirectory(destinationDir);
-
-    // Copying the unzipped files to the module directory
-    for (let entry of entries) {
-        const entryPath = entry.getPath();
-        const destinationPath = destinationDir + "/" + entryPath.substring(entryPath.indexOf("/ConspicuousUtilities-master") + 30);  // +30 to exclude the 'ConspicuousUtilities-master' directory
-        if (entry.isDirectory()) {
-            FileLib.createDirectory(destinationPath);
-        } else {
-            FileLib.copy(entryPath, destinationPath);
-        }
+function copyDir(sourceDirectory, destDirectory) {
+    try {
+        Files.walk(Paths.get(sourceDirectory)).forEach(sourcePath => {
+            try {
+                const targetPath = Paths.get(destDirectory, sourcePath.subpath(Paths.get(sourceDirectory).getNameCount(), sourcePath.getNameCount()).toString());
+                ensureDir(targetPath.getParent().toString());
+                if (!Files.isDirectory(sourcePath)) {
+                    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (e) {
+                console.log("Error copying directory: " + e);
+            }
+        });
+    } catch (e) {
+        console.log("Error walking through directory: " + e);
     }
+}
 
-    // Restore 'config.toml' and 'data' from backup
-    if (FileLib.exists(backupDir, "config.toml")) {
-        FileLib.copy(backupDir + "/config.toml", destinationDir + "/config.toml");
-    }
-    if (FileLib.exists(backupDir, "data")) {
-        FileLib.copyDirectory(backupDir + "/data", destinationDir + "/data");
-    }
+export function backupAndReplaceModule() {
+    /*const backupDir = Config.modulesFolder + "\\ConspicuousUtilities-backup";
+    copyDir(Config.modulesFolder + "\\ConspicuousUtilities/data", backupDir + "/data");
+    copyFile(Config.modulesFolder + "\\ConspicuousUtilities/config.toml", backupDir + "/config.toml");*/
 
-    // Optional: Remove backup directory
-    FileLib.deleteDirectory(backupDir);
+    unzipAndReplace(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip", Config.modulesFolder);
+
+    /*copyDir(backupDir + "/data", Config.modulesFolder + "\\ConspicuousUtilities/data");
+    copyFile(backupDir + "/config.toml", Config.modulesFolder + "\\ConspicuousUtilities/config.toml");*/
+
+    //FileLib.deleteDirectory(backupDir);
+    FileLib.deleteDirectory(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip");
+
+    ChatLib.chat("&aModule updated! Please reload ChatTriggers to see changes.");
 }
 
 export function setup() {
-    if (!FileLib.exists("ConspicuousUtilities/data", "version.txt"))
-        FileLib.write("ConspicuousUtilities/data", "version.txt", "null", true)
-
-    const currentSHA = FileLib.read("ConspicuousUtilities/data", "version.txt")
     const latestSHA = getLatestSHA()
+    if (!FileLib.exists("ConspicuousUtilities/data", "version.txt"))
+        FileLib.write("ConspicuousUtilities/data", "version.txt", latestSHA, true)
+    const currentSHA = FileLib.read("ConspicuousUtilities/data", "version.txt")
     console.log("Current version: ", currentSHA)
     console.log("Latest version: ", latestSHA)
     if (currentSHA !== latestSHA) {
         ChatLib.chat("&cYou are using an old version of ConspicuousUtilities... The module is going to be auto-updated.")
         if (!downloadFileFromURL("https://github.com/OmniscientARK/ConspicuousUtilities/archive/refs/heads/master.zip", System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip"))
             return ChatLib.chat("&4An error occurred while downloading the new version. Try again later.")
-        unzipAndReplaceModule(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip", Config.modulesGolder + "ConspicuousUtilities")
+        backupAndReplaceModule()
         FileLib.write("ConspicuousUtilities/data", "version.txt", latestSHA, true)
-        // replaceModuleFiles(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip", Config.modulesFolder + "\\ConspicuousUtilities");
     }
 }
