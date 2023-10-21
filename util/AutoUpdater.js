@@ -70,12 +70,20 @@ function moveDirectory(sourceDir, targetDir) {
     }
 
     const files = source.listFiles();
+
+    // Process directories first
     for (let i = 0; i < files.length; i++) {
-        const movedFile = new File(target.getPath(), files[i].getName());
         if (files[i].isDirectory()) {
-            moveDirectory(files[i].getPath(), movedFile.getPath());
+            const movedDir = new File(target.getPath(), files[i].getName());
+            moveDirectory(files[i].getPath(), movedDir.getPath());
             files[i]['delete'](); // delete the directory once its contents have been moved
-        } else {
+        }
+    }
+
+    // Process files
+    for (let i = 0; i < files.length; i++) {
+        if (files[i].isFile()) {
+            const movedFile = new File(target.getPath(), files[i].getName());
             if (!movedFile.getParentFile().exists()) {
                 movedFile.getParentFile().mkdirs(); // ensures parent directories exist
             }
