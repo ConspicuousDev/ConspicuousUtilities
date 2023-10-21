@@ -6,7 +6,8 @@ import AutoFishing from "./features/AutoFishing";
 import AttributeViewer from "./features/AttributeViewer";
 import DeveloperTools from "./features/DeveloperTools";
 
-AutoUpdater.setup()
+if (Settings.attributeViewer_AutoUpdaterEnabled)
+    AutoUpdater.setup()
 
 const FEATURES = [
     new HarpSolver(),

@@ -44,6 +44,13 @@ class Settings {
     })
     attributeViewer_OnlyAH = false
 
+    @SwitchProperty({
+        name: "Enable Auto Updater",
+        description: "With this enabled, the module will try to auto update on ChatTrigger reload (/ct reload).",
+        category: "Developer Tools"
+    })
+    attributeViewer_AutoUpdaterEnabled = false
+
     constructor() {
         this.initialize(this);
     }

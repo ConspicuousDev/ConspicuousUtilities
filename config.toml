@@ -8,6 +8,9 @@
 		text = ""
 		enable_harp_solver = false
 
+[developer_tools]
+	enable_auto_updater = false
+
 [attribute_viewer]
 	enable_for_other_items = true
 	enable_attribute_viewer = true
