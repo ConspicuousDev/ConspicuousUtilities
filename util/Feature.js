@@ -1,4 +1,4 @@
-export class Feature {
+export default class Feature {
     constructor(name) {
         this.name = name
         this.id = name.toLowerCase().replace(" ", "_")
@@ -9,4 +9,3 @@ export class Feature {
         return func;
     }
 }
-

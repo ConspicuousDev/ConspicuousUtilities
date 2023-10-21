@@ -56,16 +56,60 @@ function getLatestSHA() {
     return repoInfo.sha;
 }
 
+function unzipAndReplaceModule(zipFilePath, destinationDir) {
+    // Backup the 'config.toml' file and 'data' folder
+    const backupDir = System.getenv("TEMP") + "/ConspicuousUtilitiesBackup";
+    FileLib.createDirectory(backupDir);
+    if (FileLib.exists(destinationDir, "config.toml")) {
+        FileLib.copy(destinationDir + "/config.toml", backupDir + "/config.toml");
+    }
+    if (FileLib.exists(destinationDir, "data")) {
+        FileLib.copyDirectory(destinationDir + "/data", backupDir + "/data");
+    }
+
+    // Unzipping the file
+    const entries = Java.from(FileLib.unzip(zipFilePath));
+
+    // Deleting existing module files
+    FileLib.deleteDirectory(destinationDir);
+    FileLib.createDirectory(destinationDir);
+
+    // Copying the unzipped files to the module directory
+    for (let entry of entries) {
+        const entryPath = entry.getPath();
+        const destinationPath = destinationDir + "/" + entryPath.substring(entryPath.indexOf("/ConspicuousUtilities-master") + 30);  // +30 to exclude the 'ConspicuousUtilities-master' directory
+        if (entry.isDirectory()) {
+            FileLib.createDirectory(destinationPath);
+        } else {
+            FileLib.copy(entryPath, destinationPath);
+        }
+    }
+
+    // Restore 'config.toml' and 'data' from backup
+    if (FileLib.exists(backupDir, "config.toml")) {
+        FileLib.copy(backupDir + "/config.toml", destinationDir + "/config.toml");
+    }
+    if (FileLib.exists(backupDir, "data")) {
+        FileLib.copyDirectory(backupDir + "/data", destinationDir + "/data");
+    }
+
+    // Optional: Remove backup directory
+    FileLib.deleteDirectory(backupDir);
+}
+
 export function setup() {
-    if (!FileLib.exists("ConspicuousUtilities/data", "version"))
+    if (!FileLib.exists("ConspicuousUtilities/data", "version.txt"))
         FileLib.write("ConspicuousUtilities/data", "version.txt", "null", true)
 
     const currentSHA = FileLib.read("ConspicuousUtilities/data", "version.txt")
     const latestSHA = getLatestSHA()
+    console.log("Current version: ", currentSHA)
+    console.log("Latest version: ", latestSHA)
     if (currentSHA !== latestSHA) {
         ChatLib.chat("&cYou are using an old version of ConspicuousUtilities... The module is going to be auto-updated.")
         if (!downloadFileFromURL("https://github.com/OmniscientARK/ConspicuousUtilities/archive/refs/heads/master.zip", System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip"))
-            return ChatLib.chat("&4An error occurred while auto updating. Try again later.")
+            return ChatLib.chat("&4An error occurred while downloading the new version. Try again later.")
+        unzipAndReplaceModule(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip", Config.modulesGolder + "ConspicuousUtilities")
         FileLib.write("ConspicuousUtilities/data", "version.txt", latestSHA, true)
         // replaceModuleFiles(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip", Config.modulesFolder + "\\ConspicuousUtilities");
     }

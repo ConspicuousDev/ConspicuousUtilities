@@ -1,35 +1,49 @@
 import HarpSolver from "./features/HarpSolver";
 import {ALLOWED_TRIGGERS} from "./util/Constants";
 import * as AutoUpdater from "./util/AutoUpdater";
+import Settings from "./settings/Settings";
+import AutoFishing from "./features/AutoFishing";
+import AttributeViewer from "./features/AttributeViewer";
+import DeveloperTools from "./features/DeveloperTools";
 
 AutoUpdater.setup()
 
-const FEATURES = [new HarpSolver()].map((feature) => {
+const FEATURES = [
+    new HarpSolver(),
+    new AutoFishing(),
+    new AttributeViewer(),
+    new DeveloperTools()
+].map((feature) => {
     const triggers = []
     ALLOWED_TRIGGERS.forEach(allowedTrigger => {
-        if (allowedTrigger in feature && typeof feature[allowedTrigger] === "function") {
-            const triggerFunction = feature[allowedTrigger]
-            const trigger = register(allowedTrigger, triggerFunction.bind(feature))
-            if (triggerFunction.modifiers)
-                for (let property in triggerFunction.modifiers)
-                    trigger[property](triggerFunction.modifiers[property])
-            triggers.push(allowedTrigger)
-        }
+        Object.getOwnPropertyNames(Object.getPrototypeOf(feature))
+            .filter((key) => key.startsWith(allowedTrigger) && typeof feature[key] === "function")
+            .forEach((key) => {
+                const trigger = register(allowedTrigger, feature[key].bind(feature))
+                if (feature[key].modifiers)
+                    for (let modifier in feature[key].modifiers)
+                        trigger[modifier](feature[key].modifiers[modifier])
+                if (!triggers.includes(allowedTrigger))
+                    triggers.push(allowedTrigger)
+            })
     })
     console.log(`Successfully registered feature ${feature.name} (${triggers.join(", ")}).`)
     return feature
 })
 
 const COMMAND_STRUCTURE = {
-    settings: FEATURES.map(feature => [
+    settings: () => {
+        Settings.openGUI()
+    }/*FEATURES.map(feature => [
         feature.id,
         () => {
-            ChatLib.chat(`&aYou selected the feature: &b${feature.name}`)
+            Settings.openGUI(feature.name)
+            ChatLib.chat(`&aYou opened the settings page for feature &b${feature.name}&a.`)
         }
     ]).reduce((obj, [key, val]) => {
         obj[key] = val
         return obj
-    }, {}),
+    }, {})*/,
     version: () => {
         ChatLib.chat("&aYou are using &5Conspicuous&bUtilities &6v0.1&a.")
     }

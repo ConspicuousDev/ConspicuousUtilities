@@ -1,4 +1,5 @@
-import {Feature} from "../util/Feature";
+import Feature from "../util/Feature";
+import Settings from "../settings/Settings";
 
 export default class HarpSolver extends Feature {
     constructor() {
@@ -10,16 +11,16 @@ export default class HarpSolver extends Feature {
     }
 
     packetReceived(packet, event) {
-        let inv = Player.getOpenedInventory();
+        if (!Settings.harpSolver_Enabled) return
+        let inv = Player.getOpenedInventory()
         if (inv == null) return
         if (!inv.toString().includes("Harp - ")) return
         const item = packet.func_149174_e()
         const name = item ? item.toString() : ""
         const slot = packet.func_149173_d()
         if (name.includes("quartzBlock")) {
-            if (inv.getStackInSlot(slot - 18).getID() === 35) {
+            if (inv.getStackInSlot(slot - 18).getID() === 35)
                 this.doubleSlot = slot - 9
-            }
             inv.click(slot, false, "MIDDLE")
         } else if (this.doubleSlot > -1 && slot === this.doubleSlot) {
             this.doubleSlot = -1
