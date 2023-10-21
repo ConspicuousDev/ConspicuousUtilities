@@ -60,6 +60,11 @@ function moveDirectory(sourceDir, targetDir) {
     const source = new File(sourceDir);
     const target = new File(targetDir);
 
+    if (!source.exists() || !source.isDirectory()) {
+        console.log("Source directory does not exist or is not a directory: " + sourceDir);
+        return;
+    }
+
     if (!target.exists()) {
         target.mkdir();
     }
@@ -69,8 +74,11 @@ function moveDirectory(sourceDir, targetDir) {
         const movedFile = new File(target.getPath(), files[i].getName());
         if (files[i].isDirectory()) {
             moveDirectory(files[i].getPath(), movedFile.getPath());
-            files[i]['delete']();
+            files[i]['delete'](); // delete the directory once its contents have been moved
         } else {
+            if (!movedFile.getParentFile().exists()) {
+                movedFile.getParentFile().mkdirs(); // ensures parent directories exist
+            }
             Files.move(files[i].toPath(), movedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
     }
