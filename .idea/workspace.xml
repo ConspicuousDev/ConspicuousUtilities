@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dacaa45d-c2f3-45ab-8731-e0d0c2d6ebc6" name="Changes" comment="Fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util/AutoUpdater.js" beforeDir="false" afterPath="$PROJECT_DIR$/util/AutoUpdater.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -214,7 +214,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698126374029</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Fix">
+      <option name="closed" value="true" />
+      <created>1698126520986</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1698126520986</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

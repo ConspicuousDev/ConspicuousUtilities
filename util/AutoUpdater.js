@@ -97,27 +97,25 @@ function unzipAndReplace(zipFilePath, destDirPath) {
     let zipIn = null;
     try {
         const destDir = new File(destDirPath);
-        if (!destDir.exists()) {
-            destDir.mkdir();
-        }
+        if (!destDir.exists()) destDir.mkdir();
         const zipFile = new File(zipFilePath);
         zipIn = new ZipInputStream(new BufferedInputStream(Files.newInputStream(Paths.get(zipFile.toURI()))));
         let entry;
         while ((entry = zipIn.getNextEntry()) !== null) {
-            const entryName = entry.getName();
-
-            // Skip .gitignore and .idea
+            let entryName = entry.getName();
+            if (entryName.startsWith("ConspicuousUtilities-master/"))
+                entryName = entryName.replace("ConspicuousUtilities-master/", "");
             if (entryName.endsWith(".gitignore") || entryName.startsWith(".idea/")) {
-                continue;
+                console.log("Skipping file:", entryName)
+                continue
             }
-
             const filePath = destDirPath + File.separator + entryName;
             if (!entry.isDirectory()) {
-                console.log("Writing to file: " + filePath);  // Add logging for clarity
+                console.log("Writing to file: " + filePath);
 
                 if (filePath.endsWith("index.js") && entryName !== "index.js") {
                     console.error("Attempt to overwrite index.js with " + entryName);
-                    continue;  // skip this iteration
+                    continue;
                 }
 
                 const bos = new BufferedOutputStream(new FileOutputStream(filePath));
