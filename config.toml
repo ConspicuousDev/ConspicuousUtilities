@@ -21,7 +21,7 @@
 	enable_auto_fishing = true
 
 [harp_solver]
-	enable_harp_solver = true
+	enable_harp_solver = false
 
 	[harp_solver.category]
 		enable_harp_solver = false
