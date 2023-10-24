@@ -3,5 +3,3 @@ data/*
 config.toml
 .idea
 .idea/*
-.idea/workspace.xml
-.gitignore

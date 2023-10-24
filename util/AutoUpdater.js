@@ -176,9 +176,9 @@ export function backupAndReplaceModule() {
 }
 
 export function setup() {
-    const latestSHA = getLatestSHA()
     if (!FileLib.exists("ConspicuousUtilities/data", "version.txt"))
-        FileLib.write("ConspicuousUtilities/data", "version.txt", latestSHA, true)
+        FileLib.write("ConspicuousUtilities/data", "version.txt", "null", true)
+    const latestSHA = getLatestSHA()
     const currentSHA = FileLib.read("ConspicuousUtilities/data", "version.txt")
     console.log("Current version: ", currentSHA)
     console.log("Latest version: ", latestSHA)
