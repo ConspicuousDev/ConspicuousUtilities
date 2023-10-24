@@ -200,5 +200,6 @@ export function setup() {
             return ChatLib.chat("&4An error occurred while downloading the new version. Try again later.")
         backupAndReplaceModule()
         FileLib.write("ConspicuousUtilities/data", "version.txt", latestSHA, true)
+        ChatLib.command("ct reload")
     }
 }
