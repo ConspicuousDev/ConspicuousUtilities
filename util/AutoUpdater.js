@@ -168,16 +168,8 @@ function copyDir(sourceDirectory, destDirectory) {
 }
 
 export function backupAndReplaceModule() {
-    /*const backupDir = Config.modulesFolder + "\\ConspicuousUtilities-backup";
-    copyDir(Config.modulesFolder + "\\ConspicuousUtilities/data", backupDir + "/data");
-    copyFile(Config.modulesFolder + "\\ConspicuousUtilities/config.toml", backupDir + "/config.toml");*/
-
     unzipAndReplace(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip", Config.modulesFolder);
 
-    /*copyDir(backupDir + "/data", Config.modulesFolder + "\\ConspicuousUtilities/data");
-    copyFile(backupDir + "/config.toml", Config.modulesFolder + "\\ConspicuousUtilities/config.toml");*/
-
-    //FileLib.deleteDirectory(backupDir);
     FileLib.deleteDirectory(System.getenv("TEMP") + "/ConspicuousUtilities-auto-update.zip");
 
     ChatLib.chat("&aModule updated! Please reload ChatTriggers to see changes.");
