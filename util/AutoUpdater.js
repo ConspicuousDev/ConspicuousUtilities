@@ -104,6 +104,9 @@ function unzipAndReplace(zipFilePath, destDirPath) {
         zipIn = new ZipInputStream(new BufferedInputStream(Files.newInputStream(Paths.get(zipFile.toURI()))));
         let entry;
         while ((entry = zipIn.getNextEntry()) !== null) {
+            const entryName = entry.getName();
+            if (entryName.endsWith(".gitignore") || entryName.startsWith(".idea/"))
+                continue;
             const filePath = destDirPath + File.separator + entry.getName();
             if (!entry.isDirectory()) {
                 const bos = new BufferedOutputStream(new FileOutputStream(filePath));
@@ -178,8 +181,8 @@ export function backupAndReplaceModule() {
 export function setup() {
     if (!FileLib.exists("ConspicuousUtilities/data", "version.txt"))
         FileLib.write("ConspicuousUtilities/data", "version.txt", "null", true)
-    const latestSHA = getLatestSHA()
     const currentSHA = FileLib.read("ConspicuousUtilities/data", "version.txt")
+    const latestSHA = getLatestSHA()
     console.log("Current version: ", currentSHA)
     console.log("Latest version: ", latestSHA)
     if (currentSHA !== latestSHA) {

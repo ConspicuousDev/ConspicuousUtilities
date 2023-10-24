@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dacaa45d-c2f3-45ab-8731-e0d0c2d6ebc6" name="Changes" comment="Fix">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/util/AutoUpdater.js" beforeDir="false" afterPath="$PROJECT_DIR$/util/AutoUpdater.js" afterDir="false" />
     </list>
@@ -76,7 +75,7 @@
       <workItem from="1697852699583" duration="8151000" />
       <workItem from="1698064944904" duration="777000" />
       <workItem from="1698125107783" duration="489000" />
-      <workItem from="1698125608422" duration="424000" />
+      <workItem from="1698125608422" duration="57000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -206,23 +205,7 @@
       <option name="project" value="LOCAL" />
       <updated>1698125185793</updated>
     </task>
-    <task id="LOCAL-00017" summary="Fix">
-      <option name="closed" value="true" />
-      <created>1698125671161</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1698125671161</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Fix">
-      <option name="closed" value="true" />
-      <created>1698125871531</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1698125871531</updated>
-    </task>
-    <option name="localTasksCounter" value="19" />
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
