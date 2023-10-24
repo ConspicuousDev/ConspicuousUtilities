@@ -105,10 +105,21 @@ function unzipAndReplace(zipFilePath, destDirPath) {
         let entry;
         while ((entry = zipIn.getNextEntry()) !== null) {
             const entryName = entry.getName();
-            if (entryName.endsWith(".gitignore") || entryName.startsWith(".idea/"))
+
+            // Skip .gitignore and .idea
+            if (entryName.endsWith(".gitignore") || entryName.startsWith(".idea/")) {
                 continue;
-            const filePath = destDirPath + File.separator + entry.getName();
+            }
+
+            const filePath = destDirPath + File.separator + entryName;
             if (!entry.isDirectory()) {
+                console.log("Writing to file: " + filePath);  // Add logging for clarity
+
+                if (filePath.endsWith("index.js") && entryName !== "index.js") {
+                    console.error("Attempt to overwrite index.js with " + entryName);
+                    continue;  // skip this iteration
+                }
+
                 const bos = new BufferedOutputStream(new FileOutputStream(filePath));
                 const bytesIn = JavaArray.newInstance(Byte.TYPE, BUFFER_SIZE);
                 let read;
