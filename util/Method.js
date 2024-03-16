@@ -33,3 +33,32 @@ export function findItemType(item) {
     if (!itemTypeLine) return
     return itemTypeLine.split(" ").slice(1).join(" ")
 }
+
+export function findItemRarity(item) {
+    if (!item) return
+    let lore = item.getLore()
+    if (!lore) return
+    const itemTypeLine = lore
+        .map(stripColor)
+        .map(line => line.startsWith("a ") && line.endsWith(" a") ? line.slice(2, -2) : line)
+        .find(line => ITEM_RARITIES.includes(line.split(" ")[0]))
+    if (!itemTypeLine) return
+    return itemTypeLine.split(" ")[0]
+}
+
+export function findArea() {
+    try {
+        if (!TabList || !TabList.getNames()) return undefined
+        if (TabList.getNames().length < 42) return undefined
+        let currentLocation = stripColor(TabList.getNames()[21])
+        if (!currentLocation.startsWith("Area: "))
+            currentLocation = stripColor(TabList.getNames()[41])
+        return currentLocation.replace("Area: ", "")
+    } catch (err) {
+        return undefined
+    }
+}
+
+export function checkArea(area) {
+    return findArea() === area;
+}
