@@ -25,10 +25,21 @@ export default class AutoFarming extends Feature {
         this.active = false
         this.maxCycles = 0
         this.wrongItemTicks = 0
+        this.gui = new Gui()
+        this.gui.registerDraw((mouseX, mouseT, pTicks) => {
+            Renderer.colorize(0, 0, 0, .5)
+            Renderer.drawRect(Renderer.color(0, 0, 0, .5), 0, 0, Renderer.screen.getWidth(), Renderer.screen.getHeight())
+            let str = `&eAutoFarming is &aactive &ewith preset &7${this.activePreset}&e.`
+            Renderer.drawString(str, (Renderer.screen.getWidth() - Renderer.getStringWidth(str)) / 2, 20, true)
+        })
+        this.gui.registerClosed(() => {
+            if (this.active)
+                this.halt("AutoFarming GUI closed")
+        })
     }
 
     command_AutoFarming(preset, maxCycles, warp) {
-        if (!preset) return ChatLib.chat(`&cUsage: /autofarming <preset> [maxCycles] [warp].`)
+        if (!preset) return ChatLib.chat("&cUsage: /autofarming <preset> [maxCycles] [warp].")
         preset = preset.toUpperCase()
         if (!Object.keys(this.presets).includes(preset))
             return ChatLib.chat(`&cThe preset &7${preset} &cis not defined.`)
@@ -43,17 +54,19 @@ export default class AutoFarming extends Feature {
             if (input === "D") return "key.right"
             return undefined
         })
+
+        this.activePreset = preset
+        this.maxCycles = maxCycles
+        this.totalCycles = 0
+
         if (Settings.autoFarming_StartDelay > 0)
             ChatLib.chat(`&aAuto Farming will start in &e${(Settings.autoFarming_StartDelay / 1000).toFixed(1)} &asecond(s).`)
         setTimeout(() => {
             ChatLib.chat(`&aAuto Farming has been activated with preset &e${preset} &afor &e${maxCycles} &acycle(s).`)
-            /*if (Settings.autoFarming_YawPitchProtection)
-                Client.setCurrentChatMessage("-- Don't close this chat window! --")*/
+            // this.gui.open()
             this.active = true
+            Client.getKeyBindFromDescription("key.attack").setState(true)
         }, Settings.autoFarming_StartDelay)
-        /*let keyBind = Client.getKeyBindFromDescription("key.attack")
-        if (keyBind == null) return
-        keyBind.setState(true)*/
     }
 
     command_RegisterPreset(name, instructions) {
@@ -96,11 +109,11 @@ export default class AutoFarming extends Feature {
         this.active = false
         ChatLib.chat(`&cAuto Farming has been halted: &7${reason || "unknown reason"}&c.`)
         this.releaseDirections()
+        this.gui.close()
         let keyBind = Client.getKeyBindFromDescription("key.attack")
         if (keyBind == null) return
         keyBind.setState(false)
         /*let keyBind = Client.getKeyBindFromDescription("key.inventory");
-        console.log(keyBind)
         keyBind.setState(true)
         keyBind.setState(false)*/
     }
@@ -174,8 +187,7 @@ export default class AutoFarming extends Feature {
     guiOpened(event) {
         if (!Settings.autoFarming_Enabled) return
         if (!this.active) return
-        /*if (event.gui.func_73868_f()) return
-        if (event.gui.toString().includes("GuiChat")) return*/
+        if (event.gui === this.gui) return
         this.halt("GUI opened")
     }
 
