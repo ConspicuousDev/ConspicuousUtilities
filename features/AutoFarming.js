@@ -66,6 +66,8 @@ export default class AutoFarming extends Feature {
             // this.gui.open()
             this.active = true
             Client.getKeyBindFromDescription("key.attack").setState(true)
+            if (Settings.autoFarming_ShowTab)
+                Client.getKeyBindFromDescription("key.playerlist").setState(true)
         }, Settings.autoFarming_StartDelay)
     }
 
@@ -101,7 +103,6 @@ export default class AutoFarming extends Feature {
                 if (this.lastPos.pitch !== Player.getPitch()) return [false, "pitch change"]
             }
         }
-        //check inventory free slots (w/ thresh)
         return [true, undefined]
     }
 
@@ -110,12 +111,8 @@ export default class AutoFarming extends Feature {
         ChatLib.chat(`&cAuto Farming has been halted: &7${reason || "unknown reason"}&c.`)
         this.releaseDirections()
         this.gui.close()
-        let keyBind = Client.getKeyBindFromDescription("key.attack")
-        if (keyBind == null) return
-        keyBind.setState(false)
-        /*let keyBind = Client.getKeyBindFromDescription("key.inventory");
-        keyBind.setState(true)
-        keyBind.setState(false)*/
+        Client.getKeyBindFromDescription("key.attack").setState(false)
+        Client.getKeyBindFromDescription("key.playerlist").setState(false)
     }
 
     releaseDirections() {

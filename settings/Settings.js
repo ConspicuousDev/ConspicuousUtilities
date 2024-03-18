@@ -177,7 +177,6 @@ class Settings {
         category: "Rarity Display",
         subcategory: "Colors"
     })
-        // rarityDisplay_ColorAdmin = new Color(170, 0, 0);
     rarityDisplay_ColorAdmin = Color.RED;
 
     @SwitchProperty({
@@ -193,6 +192,13 @@ class Settings {
         category: "Auto Farming"
     })
     autoFarming_AutoRestart = true;
+
+    @SwitchProperty({
+        name: "Show Tab",
+        description: "Press TAB while auto farming is running.",
+        category: "Auto Farming"
+    })
+    autoFarming_ShowTab = false;
 
     @SwitchProperty({
         name: "Garden Only",
