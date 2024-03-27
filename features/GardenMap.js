@@ -125,11 +125,11 @@ export default class GardenMap extends Feature {
         if (!Settings.gardenMap_ShowInfestedPlots) return
         if (!checkArea("Garden")) return
 
-        let line = TabList.getNames().find(message => stripColor(message).startsWith(" Infested Plots: "))
+        let line = TabList.getNames().find(message => stripColor(message).startsWith(" Plots: "))
         let infestedPlots = []
         if (line) {
             line = stripColor(line)
-            infestedPlots = line.replace(" Infested Plots: ", "").split(", ").map(plot => parseInt(plot))
+            infestedPlots = line.replace(" Plots: ", "").split(", ").map(plot => parseInt(plot))
         }
         Object.entries(this.plots).forEach(([key, plot]) => plot.pests = infestedPlots.some(infestedPlot => parseInt(plot.name) === infestedPlot))
     }

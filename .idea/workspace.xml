@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dacaa45d-c2f3-45ab-8731-e0d0c2d6ebc6" name="Changes" comment="Fix auto updater">
+    <list default="true" id="dacaa45d-c2f3-45ab-8731-e0d0c2d6ebc6" name="Changes" comment="Added show tab while autofarming toggle">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/features/AutoFarming.js" beforeDir="false" afterPath="$PROJECT_DIR$/features/AutoFarming.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features/GardenMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/features/GardenMap.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +95,11 @@
       <workItem from="1710627245450" duration="1241000" />
       <workItem from="1710628505312" duration="3880000" />
       <workItem from="1710791918992" duration="3856000" />
-      <workItem from="1710799725410" duration="173000" />
+      <workItem from="1710799725410" duration="210000" />
+      <workItem from="1710801793307" duration="540000" />
+      <workItem from="1710896663134" duration="15000" />
+      <workItem from="1711075389384" duration="45000" />
+      <workItem from="1711574738256" duration="10000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <option name="closed" value="true" />
@@ -289,7 +293,23 @@
       <option name="project" value="LOCAL" />
       <updated>1710631198160</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Implement auto hold left click">
+      <option name="closed" value="true" />
+      <created>1710799932269</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1710799932269</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Added show tab while autofarming toggle">
+      <option name="closed" value="true" />
+      <created>1710802333047</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1710802333047</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -313,6 +333,8 @@
     <MESSAGE value="Fix" />
     <MESSAGE value="Feature gap" />
     <MESSAGE value="Fix auto updater" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix auto updater" />
+    <MESSAGE value="Implement auto hold left click" />
+    <MESSAGE value="Added show tab while autofarming toggle" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added show tab while autofarming toggle" />
   </component>
 </project>
